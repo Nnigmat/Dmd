@@ -11,11 +11,12 @@ c = conn.cursor()
 # Create Customers table
 c.execute('''
         create table if not exists Customers (
-            username varchar(30) primary key,
+            id integer primary key,
+            username varchar(30),
             full_name varchar(50),
             email varchar(30),
             location varchar(50),
-            phone_number varchar(15)
+            phone_number varchar(10)
         )
         ''')
 
@@ -33,8 +34,9 @@ c.execute('''
             id integer primary key,
             location varchar(50),
             charge_amount integer,
-            foreign key (model) references Models(id),
             color varchar(50)
+
+            foreign key (model) references Models(id),
         )
         ''')
 
@@ -70,7 +72,7 @@ c.execute('''
 c.execute('''
         create table if not exists Car_orders (
                 id integer primary key,
-                customer varchar(50),
+                customer_id integer,
                 car_id integer,
                 starting_location varchar(50),
                 destination varchar(50),
@@ -78,7 +80,7 @@ c.execute('''
                 date datetime default current_timestamp
 
                 foreign key (car_id) references Cars(id),
-                foreign key (customer) references Customers(username)
+                foreign key (customer_id) references Customers(id)
         )
         ''')
 
@@ -128,7 +130,8 @@ c.execute('''
                 id integer primary key,
                 car_id integer,
                 customer_id integer,
-                date datetime default current_timestamp
+                date datetime default current_timestamp,
+                cost decimal,
 
                 foreign key (car_id) references Cars(id),
                 foreign key (customer_id) references Customers(id)
@@ -141,7 +144,8 @@ c.execute('''
                 workshop_id integer,
                 part_id integer,
                 part_distributor_id integer,
-                date datetime default current_timestamp
+                date datetime default current_timestamp,
+                cost decimal,
 
                 foreign key (workshop_id) references Workshops(id),
                 foreign key (part_id) references Parts(id),
