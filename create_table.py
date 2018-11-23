@@ -22,7 +22,7 @@ c.execute('''
 # Create Models table
 c.execute('''
         create table if not exists Models (
-            id integer primaty key,
+            id integer primary key,
             name varchar(50)
         )
         ''')
@@ -33,7 +33,8 @@ c.execute('''
             id integer primary key,
             location varchar(50),
             charge_amount integer,
-            foreign key (model) references Models(id)
+            foreign key (model) references Models(id),
+            color varchar(50)
         )
         ''')
 
@@ -58,6 +59,7 @@ c.execute('''
             price integer,
             charging_time integer,
             charging_station_id integer,
+            date datetime default current_timestamp
 
             foreign key (car_id) references Cars(id),
             foreign key (charging_station_id) references Charging_stations(id)
@@ -73,6 +75,7 @@ c.execute('''
                 starting_location varchar(50),
                 destination varchar(50),
                 driving_time integer,
+                date datetime default current_timestamp
 
                 foreign key (car_id) references Cars(id),
                 foreign key (customer) references Customers(username)
@@ -125,6 +128,7 @@ c.execute('''
                 id integer primary key,
                 car_id integer,
                 customer_id integer,
+                date datetime default current_timestamp
 
                 foreign key (car_id) references Cars(id),
                 foreign key (customer_id) references Customers(id)
@@ -137,6 +141,7 @@ c.execute('''
                 workshop_id integer,
                 part_id integer,
                 part_distributor_id integer,
+                date datetime default current_timestamp
 
                 foreign key (workshop_id) references Workshops(id),
                 foreign key (part_id) references Parts(id),
