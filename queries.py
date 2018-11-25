@@ -63,4 +63,16 @@ def q8(cur_date):
     c.execute("SELECT customer_id, COUNT(*) FROM Charge_orders WHERE date >= " + str(cur_date))
     return c.fetchall()
 
-def q9()
+def q9():
+    c.execute("SELECT workshop_id, part_id, COUNT(*) FROM Parts_order GROUP BY workshop_id ORDER BY 3 DESC")
+    output = [c.fetchone()]
+    cur = output[0]
+    while cur != (None, None, None):
+        cur = c.fetchone()
+        if output[len(output) - 1][len(output[0] != cur[0]:
+            output.append(cur)
+    return cur
+
+def q10():
+    c.execute("SELECT c.id, AVG(ro.cost + co.cost) FROM Cars c, Repair_orders ro, Charge_orders co WHERE ro.car_id = c.id and co.car_id = c.id ORDER BY 2 DESC")
+    return c.fetchall()
