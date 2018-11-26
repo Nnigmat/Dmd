@@ -43,7 +43,7 @@ def generate_table():
 
         #cars
         c.execute('insert into Cars values(?, ?, ?, ?, ?)', (None, loc_gen(),
-                                                          string_generator(2, string.digits), random.randint(1, n), random.randint(1, n)))
+                                                          string_generator(2, string.digits), 'red', random.randint(1, n)))
 
         # charging stations
         c.execute('insert into Charging_stations values(?, ?, ?, ?, ?, ?, ?)', (None, loc_gen(), string_generator(2, chars=string.digits),
