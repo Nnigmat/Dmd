@@ -10,6 +10,16 @@ app = Flask(__name__)
 conn = sqlite3.connect('database.db', check_same_thread=False)
 c = conn.cursor()
 
+username = 'SalaJenyaNigma'
+fullname = 'SalaJenyaNigma DinNigMak'
+email = 'salajenyanigma@mail.ru'
+location = '60,50'
+phone = '9178764408'
+
+c.execute('insert into Customers values(?, ?, ?, ?, ?, ?)', (None, username, fullname, email, location, phone))
+c.execute('insert into Car_orders values(?, ?, ?, ?, ?, ?, ?, ?)', (None, '11', '1', '50,60', '60,70', '100', '2018-01-01 01:01:02', '100'))
+conn.commit()
+
 @app.route('/')
 def index():
     return render_template("index.html")

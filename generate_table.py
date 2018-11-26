@@ -51,8 +51,8 @@ def generate_table():
                                                                                 string_generator(1, chars=string.digits), string_generator(1, chars=string.ascii_lowercase)))
 
         # Create Charge_orders table
-        c.execute('insert into Charge_orders values(?,?,?,?,?,?)', (None, random.randint(1, n), random.randint(1, 100),
-                                                                  random.randint(100, 1000), random.randint(1, n), rand_timestamp()))
+        c.execute('insert into Charge_orders values(?,?,?,?,?,?,?)', (None, random.randint(1, n), random.randint(1, 100),
+                                                                  random.randint(100, 1000), random.randint(1, n), rand_timestamp(), random.randint(1, n)))
 
         #Parts
         c.execute('insert into Parts values(?,?,?)', (None, string_generator(10, string.ascii_lowercase),

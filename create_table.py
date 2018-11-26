@@ -64,7 +64,9 @@ def create_table():
                 charging_time integer,
                 charging_station_id integer,
                 date datetime default current_timestamp,
+                customer_id integer,
 
+                foreign key (customer_id) references Customer(id),
                 foreign key (car_id) references Cars(id),
                 foreign key (charging_station_id) references Charging_stations(id)
             )
