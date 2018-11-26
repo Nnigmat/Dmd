@@ -34,9 +34,10 @@ c.execute('''
             id integer primary key,
             location varchar(50),
             charge_amount integer,
-            color varchar(50)
+            color varchar(50),
+            model_id integer,
 
-            foreign key (model) references Models(id),
+            foreign key (model_id) references Models(id)
         )
         ''')
 
@@ -61,7 +62,7 @@ c.execute('''
             price integer,
             charging_time integer,
             charging_station_id integer,
-            date datetime default current_timestamp
+            date datetime default current_timestamp,
 
             foreign key (car_id) references Cars(id),
             foreign key (charging_station_id) references Charging_stations(id)
@@ -77,7 +78,7 @@ c.execute('''
                 starting_location varchar(50),
                 destination varchar(50),
                 driving_time integer,
-                date datetime default current_timestamp
+                date datetime default current_timestamp,
 
                 foreign key (car_id) references Cars(id),
                 foreign key (customer_id) references Customers(id)
