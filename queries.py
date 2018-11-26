@@ -1,30 +1,48 @@
-from flask import Flask
+from flask import Flask, render_template, request
+from create_table import *
+from generate_table import *
 import sqlite3
+
+create_table()
+generate_table()
 
 app = Flask(__name__)
 conn = sqlite3.connect('database.db', check_same_thread=False)
 c = conn.cursor()
 
-@app.route('/q1')
-def q1(cust_name, cur_date): # date is string in format "dd.mm.yyyy"
-    cur_date = cur_date.split(".")
-    query = "SELECT c.id FROM Car_orders co, Customers cust, Cars c WHERE cust.name = " + cust_name + " and year(co.date) = " + cur_date[2] + " and month(co.date) = " + cur_date[1] + " and day(co.date) =" + cur_date[0] + " and c.color = 'red' and c.id like 'AN%'"
+@app.route('/')
+def index():
+    return render_template("index.html")
 
-    c.execute(query)
+@app.route('/q1', methods=('GET', 'POST'))
+def q1(): # date is string in format "dd.mm.yyyy"
+    if request.method == 'POST':
+        cust_name = request.form['cur_name']
+        cur_date = request.form['cur_date']
+        cur_date = cur_date.split(".")
+        query = "SELECT c.id FROM Car_orders co, Customers cust, Cars c WHERE cust.name = " + cust_name + " and year(co.date) = " + cur_date[2] + " and month(co.date) = " + cur_date[1] + " and day(co.date) =" + cur_date[0] + " and c.color = 'red' and c.id like 'AN%'"
 
-    return c.fetchall()
+        c.execute(query)
 
-@app.route('/q2')
-def q2(cur_date):
-    cur_date = cur_date.split(".")
-    usage = []
-    for i in range (0, 24):
-        c.execute("SELECT COUNT(*) FROM Charge_orders WHERE day(date) = year(date) = " + cur_date[2] + " and month(date) = " + cur_date[1] + " and day(date) = " + cur_date[0] + " and strftime('%H', date) = " + str(i))
-        usage.append(c.fetchone())
-    output = ""
-    for i in range (0, 24):
-        output += str(i) + "h-" + str(i + 1) + "h:" + str(usage[i]) + "\n"
-    return output
+        return c.fetchall()
+    else:
+        return render_template('q1.html')
+
+@app.route('/q2', methods=('GET', 'POST'))
+def q2():
+    if request.method == 'POST':
+        cur_date = request.form['cur_date']
+        cur_date = cur_date.split(".")
+        usage = []
+        for i in range (0, 24):
+            c.execute("SELECT COUNT(*) FROM Charge_orders WHERE day(date) = year(date) = " + cur_date[2] + " and month(date) = " + cur_date[1] + " and day(date) = " + cur_date[0] + " and strftime('%H', date) = " + str(i))
+            usage.append(c.fetchone())
+        output = ""
+        for i in range (0, 24):
+            output += str(i) + "h-" + str(i + 1) + "h:" + str(usage[i]) + "\n"
+        return output
+    else:
+        return render_template('q2.html')
 
 @app.route('/q3')
 def q3():
@@ -38,10 +56,13 @@ def q3():
     output = "Morning: " + str(morning) + "\n Afternoon: " + str(afternoon) + "\n Evening: " + str(evening)
     return output
 
-@app.route('/q4')
-def q4(cust_id, cur_month):
-    c.execute("SELECT * FROM Car_orders WHERE customer_id = " + str(cust_id) + " and month(date) = " + str(cur_month))
-    return c.fetchall()
+@app.route('/q4', methods=('GET', 'POST'))
+def q4():
+    if request.method == 'POST':
+        cust_id = request.form['cust_id']
+        cur_month = request.form['cur_month']
+        c.execute("SELECT * FROM Car_orders WHERE customer_id = " + str(cust_id) + " and month(date) = " + str(cur_month))
+        return c.fetchall()
 
 @app.route('/q5')
 def q5():
@@ -72,10 +93,14 @@ def q7():
     output = c.fetchall()
     return output
 
-@app.route('/q8')
+@app.route('/q8', methods=('GET', 'POST'))
 def q8(cur_date):
-    c.execute("SELECT customer_id, COUNT(*) FROM Charge_orders WHERE date >= " + str(cur_date))
-    return c.fetchall()
+    if request.method == 'POST':
+        cur_date = request.form['cur_date']
+        c.execute("SELECT customer_id, COUNT(*) FROM Charge_orders WHERE date >= " + str(cur_date))
+        return c.fetchall()
+    else:
+        return render_template('q8.html')
 
 @app.route('/q9')
 def q9():
