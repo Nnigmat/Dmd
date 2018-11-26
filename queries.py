@@ -19,7 +19,7 @@ def q2(cur_date):
     cur_date = cur_date.split(".")
     usage = []
     for i in range (0, 24):
-        c.execute("SELECT COUNT(*) FROM Charge_orders WHERE day(date) = year(date) = " + cur_date[2] + " and month(date) = " + cur_date[1] + " and day(date) = " + cur_date[0] + " and datepart(HOUR, date) = " + str(i))
+        c.execute("SELECT COUNT(*) FROM Charge_orders WHERE day(date) = year(date) = " + cur_date[2] + " and month(date) = " + cur_date[1] + " and day(date) = " + cur_date[0] + " and strftime('%H', date) = " + str(i))
         usage.append(c.fetchone())
     output = ""
     for i in range (0, 24):
@@ -28,11 +28,11 @@ def q2(cur_date):
 
 @app.route('/q3')
 def q3():
-    c.execute("SELECT COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 7 and datepart(HOUR, date) <= 10")
+    c.execute("SELECT COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 7 and strftime('%H', date) <= 10")
     morning = c.fetchone()
-    c.execute("SELECT COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 12 and datepart(HOUR, date) <= 14")
+    c.execute("SELECT COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 12 and strftime('%H', date) <= 14")
     afternoon = c.fetchone()
-    c.execute("SELECT COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 17 and datepart(HOUR, date) <= 19")
+    c.execute("SELECT COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 17 and strftime('%H', date) <= 19")
     evening = c.fetchone()
 
     output = "Morning: " + str(morning) + "\n Afternoon: " + str(afternoon) + "\n Evening: " + str(evening)
@@ -53,11 +53,11 @@ def q5():
 
 @app.route('/q6')
 def q6():
-    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 7 and datepart(HOUR, date) <= 10 GROUP BY starting_location, destination ORDER BY 3 DESC")
+    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 7 and strftime('%H', date) <= 10 GROUP BY starting_location, destination ORDER BY 3 DESC")
     morning = c.fetchone()
-    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 12 and datepart(HOUR, date) <= 14 GROUP BY starting_location, destination ORDER BY 3 DESC")
+    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 12 and strftime('%H', date) <= 14 GROUP BY starting_location, destination ORDER BY 3 DESC")
     afternoon = c.fetchone()
-    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE datepart(HOUR, date) >= 17 and datepart(HOUR, date) <= 19 GROUP BY starting_location, destination ORDER BY 3 DESC")
+    c.execute("SELECT TOP 3 starting_location, destination, COUNT(*) FROM Car_orders WHERE strftime('%H', date) >= 17 and strftime('%H', date) <= 19 GROUP BY starting_location, destination ORDER BY 3 DESC")
     evening = c.fetchone()
 
     output = "Morning: " + str(morning) + "\n Afternoon: " + str(afternoon) + "\n Evening: " + str(evening)
@@ -65,7 +65,10 @@ def q6():
 
 @app.route('/q7')
 def q7():
-    c.execute("SELECT TOP 10 PERCENT co.car_id COUNT(*) FROM (Car_orders co, Cars c) WHERE co.car_id = c.id GROUP BY c.id ORDER BY 2 DESC")
+    c.execute("SELECT COUNT(*) FROM Cars")
+    cars_count = c.fetchall()[0][0]
+    cars_drop = int(cars_count * 0.1)
+    c.execute("SELECT co.car_id COUNT(*) FROM (Car_orders co, Cars c) WHERE co.car_id = c.id GROUP BY c.id ORDER BY 2 DESC LIMIT " + str(cars_drop))
     output = c.fetchall()
     return output
 
