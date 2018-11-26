@@ -20,7 +20,6 @@ def q1(): # date is string in format "dd.mm.yyyy"
         cust_name = request.form['cur_name']
         cur_date = request.form['cur_date']
         cur_date = cur_date.split(".")
-        query = "SELECT c.id FROM Car_orders co, Customers cust, Cars c WHERE cust.name = " + cust_name + " and year(co.date) = " + cur_date[2] + " and month(co.date) = " + cur_date[1] + " and day(co.date) =" + cur_date[0] + " and c.color = 'red' and c.id like 'AN%'"
 
         c.execute(query)
 
@@ -61,7 +60,7 @@ def q4():
     if request.method == 'POST':
         cust_id = request.form['cust_id']
         cur_month = request.form['cur_month']
-        c.execute("SELECT * FROM Car_orders WHERE customer_id = " + str(cust_id) + " and month(date) = " + str(cur_month))
+        c.execute("SELECT * FROM Car_orders WHERE customer_id = " + str(cust_id) + " and strftime("%m",date) = " + str(cur_month))
         return c.fetchall()
 
 @app.route('/q5')
