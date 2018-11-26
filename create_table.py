@@ -80,6 +80,7 @@ def create_table():
                     destination varchar(50),
                     driving_time integer,
                     date datetime default current_timestamp,
+                    distance decimal,
 
                     foreign key (car_id) references Cars(id),
                     foreign key (customer_id) references Customers(id)

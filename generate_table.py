@@ -61,9 +61,9 @@ def generate_table():
 
     for i in range(n):
         #Car_orders
-        c.execute('insert into Car_orders values(?,?,?,?,?,?,?)', (None, random.randint(1, n), random.randint(1, n),
+        c.execute('insert into Car_orders values(?,?,?,?,?,?,?,?)', (None, random.randint(1, n), random.randint(1, n),
                                                                  loc_gen(), loc_gen(),
-                                                                 random.randint(100, 10000), rand_timestamp()))
+                                                                 random.randint(100, 10000), rand_timestamp(), random.uniform(10, 100)))
 
         #Supported_models
         c.execute('insert into Supported_models values(?,?,?)', (None, random.randint(1, n), random.randint(1, n)))
