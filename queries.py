@@ -32,7 +32,7 @@ def q1(): # date is string in format "dd.mm.yyyy"
         cur_date = cur_date.split(".")
         query = "SELECT c.id FROM Car_orders co, Customers cust, Cars c WHERE cust.username = " + cust_name + " and strftime('%Y', co.date) = " + cur_date[2] + " and strftime('%m',co.date) = " + cur_date[1] + " and strftime('%d', co.date) = " + cur_date[0] + " and c.color = 'red' and c.id like 'AN%'"
         c.execute(query)
-        return c.fetchall()
+        return str(c.fetchall())
     else:
         return render_template('q1.html')
 
@@ -99,9 +99,9 @@ def q6():
 def q7():
     c.execute("SELECT COUNT(*) FROM Cars")
     cars_count = c.fetchall()[0][0]
-    cars_drop = int(cars_count * 0.1)
-    c.execute("SELECT co.car_id COUNT(*) FROM Car_orders co, Cars c WHERE co.car_id = c.id GROUP BY c.id ORDER BY 2 DESC LIMIT " + str(cars_drop))
-    output = c.fetchall()
+    cars_drop = str(int(cars_count * 0.1))
+    c.execute("SELECT co.car_id, COUNT(*) FROM Car_orders AS co, Cars AS c WHERE co.car_id = c.id GROUP BY c.id ORDER BY 2 LIMIT " + cars_drop)
+    output = str(c.fetchall())
     return output
 
 @app.route('/q8', methods=('GET', 'POST'))
@@ -109,7 +109,7 @@ def q8(cur_date=1):
     if request.method == 'POST':
         cur_date = request.form['cur_date']
         c.execute("SELECT customer_id, COUNT(*) FROM Charge_orders WHERE date >= \'" + str(cur_date) + "\'")
-        return c.fetchall()
+        return str(c.fetchall())
     else:
         return render_template('q8.html')
 
@@ -130,5 +130,5 @@ def q9():
 
 @app.route('/q10')
 def q10():
-    c.execute("SELECT c.id, AVG(ro.cost + co.price) FROM Cars c, Repair_orders ro, Charge_orders co WHERE ro.car_id = c.id and co.car_id = c.id ORDER BY 2 DESC")
+    c.execute("SELECT c.id, AVG(cost + price) FROM (Cars AS c, Repair_orders as ro, Charge_orders as co) WHERE ro.car_id = c.id and co.car_id = c.id  GROUP BY c.id ORDER BY 2 DESC")
     return str(c.fetchall())
