@@ -1,6 +1,8 @@
 from sqlite3 import connect
 import string, random
 
+n = 10000
+
 def string_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -9,10 +11,17 @@ def loc_gen():
     return str(random.uniform(40, 60))+','+str(random.uniform(40, 60))
 
 
-def rand_timestamp():
-    return '2018-'+str(random.randint(1, 12))+'-'+\
-           str(random.randint(1, 30))+' '+str(random.randint(0, 24))+':'+str(random.randint(0,60))+':'+str(random.randint(0,60))
+def check(smth):
+    return str(smth) if smth >= 10 else '0' + str(smth)
 
+def rand_timestamp():
+    day = check(random.randint(1,31))
+    month = check(random.randint(1,12))
+    hour = check(random.randint(1,24))
+    minutes = check(random.randint(1,60))
+    seconds = check(random.randint(1,60))
+
+    return '2018-{}-{} {}:{}:{}'.format(month, day, hour, minutes, seconds)
 
 def generate_table():
     try:
@@ -22,7 +31,6 @@ def generate_table():
         conn = connect('database.db')
 
     c = conn.cursor()
-    n = 10
 
     c.execute('''
             create table if not exists Models (
@@ -30,6 +38,7 @@ def generate_table():
                 name varchar(50)
             )
             ''')
+    n = globals()['n']
 
     for i in range(n):
         #customers
@@ -42,8 +51,9 @@ def generate_table():
         c.execute('insert into Models values(?, ?)', (None, string_generator(10, chars=string.ascii_lowercase)))
 
         #cars
-        c.execute('insert into Cars values(?, ?, ?, ?, ?)', (None, loc_gen(),
-                                                          string_generator(2, string.digits), 'red', random.randint(1, n)))
+        c.execute('insert into Cars values(?, ?, ?, ?, ?, ?)', (None, loc_gen(),
+                                                          string_generator(2, string.digits), 'red', random.randint(1, n),
+                                                          string_generator(2, chars=string.ascii_uppercase) + string_generator(3, chars=string.digits)))
 
         # charging stations
         c.execute('insert into Charging_stations values(?, ?, ?, ?, ?, ?, ?)', (None, loc_gen(), string_generator(2, chars=string.digits),

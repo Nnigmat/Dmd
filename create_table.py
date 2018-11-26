@@ -37,6 +37,7 @@ def create_table():
                 charge_amount integer,
                 color varchar(50),
                 model_id integer,
+                plate varchar(6),
 
                 foreign key (model_id) references Models(id)
             )
