@@ -136,5 +136,5 @@ def q9():
 
 @app.route('/q10')
 def q10():
-    c.execute("SELECT c.id, AVG(cost + price) FROM (Cars AS c, Repair_orders as ro, Charge_orders as co) WHERE ro.car_id = c.id and co.car_id = c.id  GROUP BY c.id ORDER BY 2 DESC")
+    c.execute("SELECT c.model_id, AVG(cost + price) FROM (Cars AS c, Repair_orders as ro, Charge_orders as co) WHERE ro.car_id = c.id and co.car_id = c.id  GROUP BY c.id ORDER BY 2 DESC")
     return str(c.fetchall())
